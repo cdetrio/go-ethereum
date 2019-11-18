@@ -42,7 +42,7 @@ var testVMConfig = func() vm.Config {
 	flag.StringVar(&codefile, "codefile", "", "EVM code to run")
 	flag.StringVar(&input, "input", "", "input calldata")
 	flag.StringVar(&expected, "expected", "", "expected return data")
-	flag.Parse()
+	//flag.Parse()
 	// don't actually need this vmconfig, but we need to parse custom command args in some way like this
 	return vmconfig
 }()
