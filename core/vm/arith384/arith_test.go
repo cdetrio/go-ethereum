@@ -2,7 +2,16 @@ package arith384
 
 import (
 	"testing"
+	"hash"
+
+	"golang.org/x/crypto/sha3"
+	"github.com/ethereum/go-ethereum/common"
 )
+
+type keccakState interface {
+	hash.Hash
+	Read([]byte) (int, error)
+}
 
 func TestMulMod_BLS12381(t *testing.T) {
 	x := Element{0xb1f598e5f390298f, 0x6b3088c3a380f4b8, 0x4d10c051c1fa23c0, 0x2945981a13aec13, 0x3bcea128c5c8d172, 0xdaa35e7a880a2ca}
@@ -87,3 +96,52 @@ func BenchmarkMulMod_BLS12381(b *testing.B) {
 		MulMod(&x, &x, &y, &mod, inv)
 	}
 }
+
+
+func BenchmarkKeccak256_32bytes(b *testing.B) {
+
+	input_data := common.Hex2Bytes("38d18acb67d25c8bb9942764b62f18e17054f66a817bd4295423adf9ed98873e")
+
+	keccak_hasher := sha3.NewLegacyKeccak256().(keccakState)
+
+	var output_buffer common.Hash
+
+	for n := 0; n < b.N; n++ {
+		keccak_hasher.Reset()
+		keccak_hasher.Write(input_data)
+		keccak_hasher.Read(output_buffer[:])
+	}
+}
+
+
+func BenchmarkKeccak256_136bytes(b *testing.B) {
+
+	input_data := common.Hex2Bytes("38d18acb67d25c8bb9942764b62f18e17054f66a817bd4295423adf9ed98873e38d18acb67d25c8bb9942764b62f18e17054f66a817bd4295423adf9ed98873e38d18acb67d25c8bb9942764b62f18e17054f66a817bd4295423adf9ed98873e38d18acb67d25c8bb9942764b62f18e17054f66a817bd4295423adf9ed98873e38d18acb67d25c8b")
+
+	keccak_hasher := sha3.NewLegacyKeccak256().(keccakState)
+
+	var output_buffer common.Hash
+
+	for n := 0; n < b.N; n++ {
+		keccak_hasher.Reset()
+		keccak_hasher.Write(input_data)
+		keccak_hasher.Read(output_buffer[:])
+	}
+}
+
+
+func BenchmarkKeccak256_256bytes(b *testing.B) {
+
+	input_data := common.Hex2Bytes("38d18acb67d25c8bb9942764b62f18e17054f66a817bd4295423adf9ed98873e38d18acb67d25c8bb9942764b62f18e17054f66a817bd4295423adf9ed98873e38d18acb67d25c8bb9942764b62f18e17054f66a817bd4295423adf9ed98873e38d18acb67d25c8bb9942764b62f18e17054f66a817bd4295423adf9ed98873e38d18acb67d25c8bb9942764b62f18e17054f66a817bd4295423adf9ed98873e38d18acb67d25c8bb9942764b62f18e17054f66a817bd4295423adf9ed98873e38d18acb67d25c8bb9942764b62f18e17054f66a817bd4295423adf9ed98873e38d18acb67d25c8bb9942764b62f18e17054f66a817bd4295423adf9ed98873e")
+
+	keccak_hasher := sha3.NewLegacyKeccak256().(keccakState)
+
+	var output_buffer common.Hash
+
+	for n := 0; n < b.N; n++ {
+		keccak_hasher.Reset()
+		keccak_hasher.Write(input_data)
+		keccak_hasher.Read(output_buffer[:])
+	}
+}
+
